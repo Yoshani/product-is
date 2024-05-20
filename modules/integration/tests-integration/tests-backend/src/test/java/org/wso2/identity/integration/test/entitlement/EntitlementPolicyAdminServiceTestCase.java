@@ -27,6 +27,7 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.wso2.carbon.identity.entitlement.stub.EntitlementPolicyAdminServiceEntitlementException;
 import org.wso2.identity.integration.common.clients.entitlement.EntitlementPolicyServiceClient;
 import org.wso2.carbon.identity.entitlement.stub.dto.PaginatedPolicySetDTO;
 import org.wso2.carbon.identity.entitlement.stub.dto.PolicyDTO;
@@ -188,7 +189,8 @@ public class EntitlementPolicyAdminServiceTestCase extends ISIntegrationTest {
 
     @Test(groups = "wso2.is", description = "Check getting subscriber Ids", dependsOnMethods="testGetSubscriberIds")
     public void testPublish() throws Exception{
-        entitlementPolicyClient.publish(POLICY_1_ID);
+        // entitlementPolicyClient.publish(POLICY_1_ID);
+		entitlementPolicyClient.publishPolicies(new String[]{POLICY_1_ID}, new String[]{"PDP Subscriber"}, "CREATE", true, null, 1);
     }
 
     @Test(groups = "wso2.is", description = "Check getting subscriber Ids", dependsOnMethods="testPublish")
@@ -222,7 +224,8 @@ public class EntitlementPolicyAdminServiceTestCase extends ISIntegrationTest {
         entitlementPolicyClient.deleteSubscriber("1001");
     }
 
-	@Test(groups = "wso2.is", description = "Check import policy from registry", dependsOnMethods="testDeleteSubscriber", expectedExceptions=RemoteException.class)
+	@Test(groups = "wso2.is", description = "Check import policy from registry", dependsOnMethods=
+			"testDeleteSubscriber", expectedExceptions= EntitlementPolicyAdminServiceEntitlementException.class)
 	public void testImportPolicyFromRegistry() throws Exception {
 //		TODO - need to modify this to have success import without the exception below.
 		entitlementPolicyClient.importPolicyFromRegistry("InvalidRegistry:Path/test");

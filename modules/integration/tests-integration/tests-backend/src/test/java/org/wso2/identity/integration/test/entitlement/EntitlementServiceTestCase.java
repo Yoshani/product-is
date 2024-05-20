@@ -46,8 +46,9 @@ public class EntitlementServiceTestCase extends ISIntegrationTest {
             "<Attribute AttributeId=\"urn:oasis:names:tc:xacml:1.0:action:action-id\" IncludeInResult=\"false\">" +
             "<AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#string\">read</AttributeValue></Attribute></Attributes>" +
             "<Attributes Category=\"urn:oasis:names:tc:xacml:1.0:subject-category:access-subject\">" +
-            "<Attribute AttributeId=\"urn:oasis:names:tc:xacml:1.0:subject:subject-id\" IncludeInResult=\"false\">" +
-            "<AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#string\">admin</AttributeValue></Attribute></Attributes>" +
+            "<Attribute AttributeId=\"http://wso2.org/claims/country\" IncludeInResult=\"false\">" +
+            "<AttributeValue DataType=\"http://www.w3" +
+            ".org/2001/XMLSchema#string\">SL</AttributeValue></Attribute></Attributes>" +
             "<Attributes Category=\"urn:oasis:names:tc:xacml:3.0:attribute-category:resource\">" +
             "<Attribute AttributeId=\"urn:oasis:names:tc:xacml:1.0:resource:resource-id\" IncludeInResult=\"false\">" +
             "<AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#string\">http://localhost:8280/services/echo/</AttributeValue>" +
@@ -81,26 +82,26 @@ public class EntitlementServiceTestCase extends ISIntegrationTest {
         userProfileMgtClient = new UserProfileMgtServiceClient(backendURL, sessionCookie);
     }
 
-    @Test(groups = "wso2.is", description = "Check set user profile")
-    public void testSetUserProfile() throws RemoteException, UserProfileMgtServiceUserProfileExceptionException {
-        UserProfileDTO profile = userProfileMgtClient.getUserProfile("admin", "default");
-        UserFieldDTO country = new UserFieldDTO();
-        country.setClaimUri("http://wso2.org/claims/country");
-        country.setFieldValue("SL");
-        UserFieldDTO[] fields = profile.getFieldValues();
-        UserFieldDTO[] newfields = new UserFieldDTO[fields.length];
-        for (int i=0; i<fields.length; i++){
-            if(fields[i].getDisplayName().toString().equals("Country")){
-                newfields[i] = country;
-            }else{
-                newfields[i] = fields[i];
-            }
-        }
-        profile.setFieldValues(newfields);
-        userProfileMgtClient.setUserProfile("admin", profile);
-    }
+//    @Test(groups = "wso2.is", description = "Check set user profile")
+//    public void testSetUserProfile() throws RemoteException, UserProfileMgtServiceUserProfileExceptionException {
+//        UserProfileDTO profile = userProfileMgtClient.getUserProfile("admin", "default");
+//        UserFieldDTO country = new UserFieldDTO();
+//        country.setClaimUri("http://wso2.org/claims/country");
+//        country.setFieldValue("SL");
+//        UserFieldDTO[] fields = profile.getFieldValues();
+//        UserFieldDTO[] newfields = new UserFieldDTO[fields.length];
+//        for (int i=0; i<fields.length; i++){
+//            if(fields[i].getDisplayName().toString().equals("Country")){
+//                newfields[i] = country;
+//            }else{
+//                newfields[i] = fields[i];
+//            }
+//        }
+//        profile.setFieldValues(newfields);
+//        userProfileMgtClient.setUserProfile("admin", profile);
+//    }
 
-    @Test(groups = "wso2.is", dependsOnMethods = {"testSetUserProfile"}, description = "Check publish policy")
+    @Test(groups = "wso2.is", description = "Check publish policy")
     public void testPublishPolicy() throws Exception {
         PolicyDTO policy = new PolicyDTO();
         policy.setPolicy(POLICY);

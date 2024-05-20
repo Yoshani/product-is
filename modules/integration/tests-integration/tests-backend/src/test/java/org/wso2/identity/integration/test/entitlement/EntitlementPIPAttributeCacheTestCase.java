@@ -205,7 +205,7 @@ public class EntitlementPIPAttributeCacheTestCase extends ISIntegrationTest {
                 "</Attribute>\n" +
                 "</Attributes>\n" +
                 "<Attributes Category=\"urn:oasis:names:tc:xacml:1.0:subject-category:access-subject\">\n" +
-                "<Attribute AttributeId=\"urn:oasis:names:tc:xacml:1.0:subject:subject-id\" " +
+                "<Attribute AttributeId=\"http://wso2.org/claims/emailaddress\" " +
                 "IncludeInResult=\"false\">\n" +
                 "<AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#string\">" + subject +
                 "</AttributeValue>\n" +

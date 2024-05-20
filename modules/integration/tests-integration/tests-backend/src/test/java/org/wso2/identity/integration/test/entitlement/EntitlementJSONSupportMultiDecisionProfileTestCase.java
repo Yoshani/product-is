@@ -21,6 +21,14 @@ package org.wso2.identity.integration.test.entitlement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +40,7 @@ import org.wso2.carbon.identity.entitlement.stub.dto.PolicyDTO;
 import org.wso2.identity.integration.common.clients.entitlement.EntitlementPolicyServiceClient;
 import org.wso2.identity.integration.common.clients.usermgt.remote.RemoteUserStoreManagerServiceClient;
 import org.wso2.identity.integration.common.utils.ISIntegrationTest;
+import org.wso2.identity.integration.test.utils.DataExtractUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -177,67 +186,75 @@ public class EntitlementJSONSupportMultiDecisionProfileTestCase extends ISIntegr
     }
 
     @Test(groups = "wso2-is", description = "A simple JSON request sample")
-    public void testPdpJSONSimpleRequest() throws JSONException {
+    public void testPdpJSONSimpleRequest() throws JSONException, IOException {
 
-        WebClient client = WebClient.create(ENDPOINT_ADDRESS);
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
 
-        client.header("Authorization", "Basic YWRtaW46YWRtaW4=");
-        client.type("application/json");
-        client.accept("application/json");
+            String request = readReource("entitlement/json/simpleRequest.json");
+            String response = readReource("entitlement/json/simpleResponse.json");
+            JSONObject objExpected = new JSONObject(response);
 
-        client.path("pdp");
+            HttpPost post = new HttpPost(ENDPOINT_ADDRESS + "/pdp");
+            post.setHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+            post.setHeader("Content-Type", "application/json");
+            post.setHeader("Accept", "application/json");
+            post.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
 
-        String request = readReource("entitlement/json/simpleRequest.json");
-        String response = readReource("entitlement/json/simpleResponse.json");
-        JSONObject objExpected = new JSONObject(response);
-
-        String webRespose = client.post(request, String.class);
-        JSONObject objReturn = new JSONObject(webRespose);
-        Assert.assertTrue(areJSONObjectsEqual(objExpected, objReturn), "The response is wrong it should be :"+ response + " But" +
-                " the response is :" + webRespose);
+            HttpResponse webResponse = client.execute(post);
+            String content = DataExtractUtil.getContentData(webResponse);
+            JSONObject objReturn = new JSONObject(content);
+            Assert.assertTrue(areJSONObjectsEqual(objExpected, objReturn),
+                    "The response is wrong it should be :" + response + " But" +
+                            " the response is :" + webResponse);
+        }
     }
 
     @Test(groups = "wso2-is", description = "A complex multi-decision JSON request sample")
-    public void testPdpJSONMultiDecisionRequest() throws  JSONException {
+    public void testPdpJSONMultiDecisionRequest() throws  JSONException, IOException {
 
-        WebClient client = WebClient.create(ENDPOINT_ADDRESS);
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
 
-        client.header("Authorization", "Basic YWRtaW46YWRtaW4=");
-        client.type("application/json");
-        client.accept("application/json");
+            String request = readReource("entitlement/json/complexMDPRequest.json");
+            String response = readReource("entitlement/json/complexMDPResponse.json");
+            JSONObject objExpected = new JSONObject(response);
 
-        client.path("pdp");
+            HttpPost post = new HttpPost(ENDPOINT_ADDRESS + "/pdp");
+            post.setHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+            post.setHeader("Content-Type", "application/json");
+            post.setHeader("Accept", "application/json");
+            post.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
 
-        String request = readReource("entitlement/json/complexMDPRequest.json");
-        String response = readReource("entitlement/json/complexMDPResponse.json");
-        JSONObject objExpected = new JSONObject(response);
-
-        String webRespose = client.post(request, String.class);
-        JSONObject objReturn = new JSONObject(webRespose);
-        Assert.assertTrue(areJSONObjectsEqual(objExpected, objReturn), "The response is wrong it should be :"+ response + " But" +
-                " the response is :" + webRespose);
-
+            HttpResponse webResponse = client.execute(post);
+            String content = DataExtractUtil.getContentData(webResponse);
+            JSONObject objReturn = new JSONObject(content);
+            Assert.assertTrue(areJSONObjectsEqual(objExpected, objReturn),
+                    "The response is wrong it should be :" + response + " But" +
+                            " the response is :" + webResponse);
+        }
     }
 
     @Test(groups = "wso2-is", description = "A complex multi-decision JSON request sample in simple form")
-    public void testPdpJSONMultiDecisionRequestSimpleForm() throws JSONException {
+    public void testPdpJSONMultiDecisionRequestSimpleForm() throws JSONException, IOException {
 
-        WebClient client = WebClient.create(ENDPOINT_ADDRESS);
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
 
-        client.header("Authorization", "Basic YWRtaW46YWRtaW4=");
-        client.type("application/json");
-        client.accept("application/json");
+            String request = readReource("entitlement/json/simpleMDPRequest.json");
+            String response = readReource("entitlement/json/simpleMDPResponse.json");
+            JSONObject objExpected = new JSONObject(response);
 
-        client.path("pdp");
+            HttpPost post = new HttpPost(ENDPOINT_ADDRESS + "/pdp");
+            post.setHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+            post.setHeader("Content-Type", "application/json");
+            post.setHeader("Accept", "application/json");
+            post.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
 
-        String request = readReource("entitlement/json/simpleMDPRequest.json");
-        String response = readReource("entitlement/json/simpleMDPResponse.json");
-        JSONObject objExpected = new JSONObject(response);
-
-        String webRespose = client.post(request, String.class);
-        JSONObject objReturn = new JSONObject(webRespose);
-        Assert.assertTrue(areJSONObjectsEqual(objExpected, objReturn), "The response is wrong it should be :"+ response + " But" +
-                " the response is :" + webRespose);
+            HttpResponse webResponse = client.execute(post);
+            String content = DataExtractUtil.getContentData(webResponse);
+            JSONObject objReturn = new JSONObject(content);
+            Assert.assertTrue(areJSONObjectsEqual(objExpected, objReturn),
+                    "The response is wrong it should be :" + response + " But" +
+                            " the response is :" + webResponse);
+        }
     }
 
     @AfterClass(alwaysRun = true)
